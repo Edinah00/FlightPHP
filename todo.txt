@@ -1,0 +1,73 @@
+Objectifs
+    Conception de base de données, Requêtes SQL , Applications web
+Preparation
+    fonction connect au base 
+
+I-AFFICHAGE DES DONNEES
+    Liste par jour des véhicules et son chauffeur correspondant
+        base
+            create table Chauffeur(id,nom);
+            create table Trajet(point A, point B);
+            
+        fonctions
+            
+        design
+            
+        integration
+
+    Total montant bénéfice par véhicule  
+        base
+
+        fonctions
+            
+        design
+            
+        integration
+
+    Total montant bénéfice par jour
+        base
+
+        fonctions
+            
+        design
+            
+        integration
+
+    Afficher les trajets les plus rentables par jour.
+        base
+
+        fonctions
+            
+        design
+            
+        integration
+
+II-RECHERCHE ET STAT
+    Afficher les véhicules disponibles dans une date donnée
+        base
+
+        fonctions
+            
+        design
+
+        integration
+            
+    Afficher le taux de pourcentage de panne par mois (on suppose qu’un véhicule doit
+    travailler 25 jours / mois) de chaque véhicule
+        base
+
+        fonctions
+            
+        design
+
+        integration
+
+III-GESTION DE SALAIRE DES chauffeur
+    salaire journalier de chaque chauffeur
+        base
+
+        fonctions
+            
+        design
+            
+        integration
