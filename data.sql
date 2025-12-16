@@ -1,5 +1,6 @@
 -- Base de données pour système de livraison
-
+CREATE DATABASE IF NOT EXISTS gestion_livraison;
+USE gestion_livraison;
 -- Table des livreurs
 CREATE TABLE livreurs_liv (
     id_livreur INT PRIMARY KEY AUTO_INCREMENT,
