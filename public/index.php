@@ -1,4 +1,27 @@
+
 <?php
+require '../vendor/autoload.php';
+
+// Charger le fichier de config
+$config = require __DIR__ . '/../config/config.php';
+$host     = $config['database']['host'];
+$dbname   = $config['database']['dbname'];
+$user     = $config['database']['user'];
+$password = $config['database']['password'];
+
+// Création de la connexion mysqli
+$conn = new mysqli($host, $user, $password, $dbname);
+
+// Vérifier la connexion
+if ($conn->connect_error) {
+    die("Erreur de connexion MySQL : " . $conn->connect_error);
+}
+
+// Optionnel : définir l'encodage
+$conn->set_charset("utf8");
+
+// On peut enregistrer cette connexion dans Flight pour y accéder depuis les modèles
+Flight::set('db', $conn);
 
 /*
  * FlightPHP Framework

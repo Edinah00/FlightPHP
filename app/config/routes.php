@@ -1,30 +1,43 @@
 <?php
 
-use app\controllers\ApiExampleController;
+use app\controllers\DeliveryController;
+use app\controllers\BenefitController;
 use app\middlewares\SecurityHeadersMiddleware;
 use flight\Engine;
 use flight\net\Router;
 
-/** 
- * @var Router $router 
+/**
+ * @var Router $router
  * @var Engine $app
  */
 
-// This wraps all routes in the group with the SecurityHeadersMiddleware
-$router->group('', function(Router $router) use ($app) {
+$router->group('', function (Router $router) use ($app) {
 
-	$router->get('/', function() use ($app) {
-		$app->render('welcome', [ 'message' => 'You are gonna do great things!' ]);
-	});
+    // Page d'accueil
+    $router->get('/', function () use ($app) {
+        $app->render('welcome', [
+            'message' => 'Welcome to Delivery System'
+        ]);
+    });
 
-	$router->get('/hello-world/@name', function($name) {
-		echo '<h1>Hello world! Oh hey '.$name.'!</h1>';
-	});
+    // =======================
+    // LIVRAISONS
+    // =======================
 
-	$router->group('/api', function() use ($router) {
-		$router->get('/users', [ ApiExampleController::class, 'getUsers' ]);
-		$router->get('/users/@id:[0-9]', [ ApiExampleController::class, 'getUser' ]);
-		$router->post('/users/@id:[0-9]', [ ApiExampleController::class, 'updateUser' ]);
-	});
-	
-}, [ SecurityHeadersMiddleware::class ]);
+    $router->get('/deliveries', [DeliveryController::class, 'index']);
+    $router->get('/deliveries/create', [DeliveryController::class, 'create']);
+    $router->post('/deliveries/store', [DeliveryController::class, 'store']);
+    $router->get('/deliveries/@id:[0-9]+', [DeliveryController::class, 'show']);
+    $router->post(
+        '/deliveries/@id:[0-9]+/update-status',
+        [DeliveryController::class, 'updateStatus']
+    );
+
+    // =======================
+    // BENEFICES
+    // =======================
+
+    $router->get('/benefits', [BenefitController::class, 'index']);
+    $router->get('/benefits/period/@type', [BenefitController::class, 'byPeriod']);
+
+}, [SecurityHeadersMiddleware::class]);
