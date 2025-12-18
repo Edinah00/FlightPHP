@@ -42,7 +42,7 @@ class Benefit
             SELECT 
                 $selectDate,
                 COUNT(*) AS nombre_livraisons,
-                SUM(c.poids_kg * c.prix_par_kg) AS chiffre_affaire_total,
+                SUM(c.poids_kg * c.prix_par_kg) AS revenu_total,
                 SUM(liv.salaire_par_livraison + l.cout_vehicule) AS cout_total,
                 SUM((c.poids_kg * c.prix_par_kg) - (liv.salaire_par_livraison + l.cout_vehicule)) AS benefice_total
             FROM livraisons_liv l

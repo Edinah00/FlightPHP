@@ -1,3 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>benefits</title>
+    <link rel="stylesheet" href="<?= BASE_URL ?>/css/style.css">
+</head>
+<body>
 <!-- FILE: app/views/deliveries/create.php -->
 <h2><?= $title ?></h2>
 
@@ -166,6 +175,7 @@ document.getElementById('poids_kg').addEventListener('input', updateRecap);
 document.getElementById('prix_par_kg').addEventListener('input', updateRecap);
 document.getElementById('cout_vehicule').addEventListener('input', updateRecap);
 document.getElementById('id_livreur').addEventListener('change', updateRecap);
+
 </script>
 
 <style>

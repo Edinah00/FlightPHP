@@ -2,7 +2,8 @@
 -- Compatible MySQL et PostgreSQL
 -- Toutes les tables ont le suffixe _liv
 -- CHANGEMENT MAJEUR: Coût véhicule saisi PAR LIVRAISON (pas par jour)
-
+CREATE DATABASE gestion_livraison;
+use gestion_livraison;
 -- Table des livreurs (chauffeurs)
 CREATE TABLE livreurs_liv (
     id_livreur INT PRIMARY KEY AUTO_INCREMENT,
