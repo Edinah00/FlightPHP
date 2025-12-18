@@ -1,5 +1,4 @@
 <?php
-
 namespace app\models;
 
 use Flight;
@@ -10,13 +9,9 @@ class Benefit
 
     public function __construct()
     {
-        // Récupérer la connexion MySQLi enregistrée dans Flight
         $this->conn = Flight::get('db');
     }
 
-    /**
-     * Récupérer les bénéfices par période
-     */
     public function getByPeriod(string $type = 'day', $start = null, $end = null): array
     {
         $selectDate = '';
@@ -26,11 +21,6 @@ class Benefit
             case 'day':
                 $selectDate = "DATE(l.date_creation) AS periode";
                 $groupBy = "DATE(l.date_creation)";
-                break;
-
-            case 'week':
-                $selectDate = "YEARWEEK(l.date_creation, 1) AS periode";
-                $groupBy = "YEARWEEK(l.date_creation, 1)";
                 break;
 
             case 'month':
@@ -52,14 +42,13 @@ class Benefit
             SELECT 
                 $selectDate,
                 COUNT(*) AS nombre_livraisons,
-                SUM(c.poids_kg * c.prix_par_kg) AS revenu_total,
-                SUM(liv.salaire_journalier + v.cout_journalier) AS cout_total,
-                SUM((c.poids_kg * c.prix_par_kg) - (liv.salaire_journalier + v.cout_journalier)) AS benefice_total
+                SUM(c.poids_kg * c.prix_par_kg) AS chiffre_affaire_total,
+                SUM(liv.salaire_par_livraison + l.cout_vehicule) AS cout_total,
+                SUM((c.poids_kg * c.prix_par_kg) - (liv.salaire_par_livraison + l.cout_vehicule)) AS benefice_total
             FROM livraisons_liv l
             JOIN colis_liv c ON l.id_colis = c.id_colis
-            JOIN affectations_liv a ON l.id_affectation = a.id_affectation
-            JOIN livreurs_liv liv ON a.id_livreur = liv.id_livreur
-            JOIN vehicules_liv v ON a.id_vehicule = v.id_vehicule
+            JOIN livreurs_liv liv ON l.id_livreur = liv.id_livreur
+            JOIN vehicules_liv v ON l.id_vehicule = v.id_vehicule
             WHERE l.statut != 'annule'
         ";
 
@@ -92,14 +81,29 @@ class Benefit
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
-    /**
-     * Détails complets via la vue SQL
-     */
     public function getDetails(): array
     {
         $sql = "SELECT * FROM vue_benefices_livraisons_liv ORDER BY date_creation DESC";
         $result = $this->conn->query($sql);
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
 
+    public function getBeneficesByVehicule(): array
+    {
+        $sql = "SELECT 
+                    v.immatriculation,
+                    v.marque,
+                    v.modele,
+                    COUNT(*) AS nombre_livraisons,
+                    SUM(vb.chiffre_affaire) AS ca_total,
+                    SUM(vb.cout_revient_total) AS cout_total,
+                    SUM(vb.benefice) AS benefice_total
+                FROM vue_benefices_livraisons_liv vb
+                JOIN vehicules_liv v ON vb.immatriculation = v.immatriculation
+                GROUP BY v.id_vehicule
+                ORDER BY benefice_total DESC";
+
+        $result = $this->conn->query($sql);
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 }

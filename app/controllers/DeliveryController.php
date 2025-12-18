@@ -1,5 +1,4 @@
 <?php
-
 namespace app\controllers;
 
 use Flight;
@@ -8,7 +7,6 @@ use Exception;
 
 class DeliveryController
 {
-    // GET /deliveries
     public static function index()
     {
         $model = new Delivery();
@@ -22,22 +20,20 @@ class DeliveryController
         Flight::render('layouts/main');
     }
 
-    // GET /deliveries/create
     public static function create()
     {
         $model = new Delivery();
 
         Flight::render('deliveries/create', [
-            'affectations' => $model->getAffectations(),
-            'zones'        => $model->getZones(),
-            'entrepots'    => $model->getEntrepots(),
-            'title'        => 'Nouvelle livraison'
+            'livreurs'  => $model->getLivreurs(),
+            'vehicules' => $model->getVehicules(),
+            'zones'     => $model->getZones(),
+            'title'     => 'Nouvelle livraison'
         ], 'content');
 
         Flight::render('layouts/main');
     }
 
-    // POST /deliveries/store
     public static function store()
     {
         $model = new Delivery();
@@ -50,14 +46,14 @@ class DeliveryController
                 'poids_kg'             => $req->poids_kg,
                 'prix_par_kg'          => $req->prix_par_kg,
                 'description'          => $req->description,
-                'id_affectation'       => $req->id_affectation,
-                'id_entrepot'          => $req->id_entrepot,
+                'id_livreur'           => $req->id_livreur,
+                'id_vehicule'          => $req->id_vehicule,
                 'id_zone'              => $req->id_zone,
-                'adresse_destination'  => $req->adresse_destination
+                'adresse_destination'  => $req->adresse_destination,
+                'cout_vehicule'        => $req->cout_vehicule
             ];
 
             $model->create($data);
-
             Flight::redirect('/deliveries?success=1');
 
         } catch (Exception $e) {
@@ -65,7 +61,6 @@ class DeliveryController
         }
     }
 
-    // GET /deliveries/@id
     public static function show($id)
     {
         $model = new Delivery();
@@ -84,7 +79,6 @@ class DeliveryController
         Flight::render('layouts/main');
     }
 
-    // POST /deliveries/@id/update-status
     public static function updateStatus($id)
     {
         $status = Flight::request()->data->status ?? 'en_attente';
