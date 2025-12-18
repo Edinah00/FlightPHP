@@ -24,7 +24,7 @@
     
     <footer>
         <div class="container">
-            <p>&copy; 2024 Système de Livraison - Todo List Project</p>
+            <p>&copy; 2025 : binome ETU004285_ETU004280 </p>
         </div>
     </footer>
     
