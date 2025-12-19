@@ -1,7 +1,7 @@
 <?php
 // ============================================
 // FILE: app/views/layouts/main.php
-// Layout principal avec navigation complète
+// Layout principal avec navigation complète - Version améliorée
 // ============================================
 ?>
 <!DOCTYPE html>
@@ -12,98 +12,320 @@
     <title><?= $title ?? 'Système de Livraison' ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Navigation Links */
         .nav-link {
-            @apply px-4 py-2 rounded-lg transition-colors duration-200;
+            position: relative;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
+        
         .nav-link:hover {
-            @apply bg-blue-100;
+            background: linear-gradient(135deg, #EBF4FF 0%, #E0F2FE 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
         }
+        
         .nav-link.active {
-            @apply bg-blue-500 text-white;
+            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
         }
+        
+        .nav-link.active::before {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background: #3B82F6;
+            border-radius: 50%;
+        }
+        
+        /* Danger Link */
         .danger-link {
-            @apply text-red-600 hover:text-red-800 hover:bg-red-50;
+            color: #DC2626;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .danger-link:hover {
+            background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+            color: #991B1B;
+            transform: translateX(4px);
+        }
+        
+        /* Dropdown Menu */
+        .dropdown-menu {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            border: 1px solid #E5E7EB;
+            backdrop-filter: blur(10px);
+        }
+        
+        .group:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .dropdown-item {
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .dropdown-item:hover {
+            border-left-color: #3B82F6;
+            padding-left: 1.25rem;
+        }
+        
+        /* Primary Button */
+        .btn-primary {
+            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        
+        /* Mobile Menu Animation */
+        #mobileMenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-in-out;
+        }
+        
+        #mobileMenu.show {
+            max-height: 500px;
+        }
+        
+        /* Breadcrumb */
+        .breadcrumb-link {
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        
+        .breadcrumb-link:hover {
+            color: #3B82F6;
+        }
+        
+        .breadcrumb-link:hover::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #3B82F6, #60A5FA);
+            border-radius: 2px;
+        }
+        
+        /* Alert Animation */
+        .alert {
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Footer Links */
+        .footer-link {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .footer-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #3B82F6;
+            transition: width 0.3s ease;
+        }
+        
+        .footer-link:hover::after {
+            width: 100%;
+        }
+        
+        /* Navbar Shadow on Scroll */
+        .navbar-scrolled {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        /* Logo Animation */
+        .logo-icon {
+            transition: all 0.3s ease;
+        }
+        
+        .logo-icon:hover {
+            transform: rotate(360deg) scale(1.1);
+        }
+        
+        /* Smooth Glassmorphism Effect */
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+        }
+        
+        /* Card Hover Effect */
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #F3F4F6;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #3B82F6, #2563EB);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #2563EB, #1D4ED8);
+        }
+        
+        /* Mobile Menu Button Animation */
+        .hamburger-line {
+            transition: all 0.3s ease;
+        }
+        
+        .hamburger-active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        
+        .hamburger-active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .hamburger-active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
         }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gradient-to-br from-gray-50 via-blue-50 to-gray-50 min-h-screen">
     <!-- Navigation -->
-    <nav class="bg-white shadow-lg mb-6">
+    <nav id="navbar" class="glass-effect sticky top-0 z-50 transition-all duration-300">
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-between h-16">
                 <!-- Logo -->
-                <div class="flex items-center space-x-2">
-                    <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                    </svg>
-                    <span class="text-xl font-bold text-gray-800">DeliveryApp</span>
-                </div>
+                <a href="/" class="flex items-center">
+                    <span class="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent hover:from-blue-500 hover:to-blue-300 transition-all">
+                        DeliveryApp
+                    </span>
+                </a>
 
                 <!-- Menu principal -->
-                <div class="hidden md:flex items-center space-x-2">
+                <div class="hidden md:flex items-center space-x-1">
                     <a href="/deliveries" class="nav-link <?= strpos($_SERVER['REQUEST_URI'], '/deliveries') !== false ? 'active' : '' ?>">
-                        📦 Livraisons
+                        Livraisons
                     </a>
                     
                     <a href="/zones" class="nav-link <?= strpos($_SERVER['REQUEST_URI'], '/zones') !== false ? 'active' : '' ?>">
-                        🗺️ Zones
+                        Zones
                     </a>
                     
                     <a href="/benefits" class="nav-link <?= strpos($_SERVER['REQUEST_URI'], '/benefits') !== false ? 'active' : '' ?>">
-                        💰 Bénéfices
+                        Bénéfices
                     </a>
 
                     <!-- Dropdown Admin -->
                     <div class="relative group">
-                        <button class="nav-link <?= strpos($_SERVER['REQUEST_URI'], '/admin') !== false ? 'active' : '' ?> flex items-center">
-                            ⚙️ Admin
-                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <button class="nav-link <?= strpos($_SERVER['REQUEST_URI'], '/admin') !== false ? 'active' : '' ?>">
+                            Admin
+                            <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                             </svg>
                         </button>
                         
                         <!-- Dropdown menu -->
-                        <div class="hidden group-hover:block absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl z-50">
-                            <a href="/admin/stats" class="block px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-t-lg">
-                                📊 Statistiques
+                        <div class="dropdown-menu absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl overflow-hidden">
+                            <a href="/admin/stats" class="dropdown-item block px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50">
+                                <span class="font-medium">Statistiques</span>
                             </a>
-                            <hr>
-                            <a href="/admin/danger-zone" class="block px-4 py-3 danger-link rounded-b-lg">
-                                ⚠️ Zone dangereuse
+                            <div class="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+                            <a href="/admin/danger-zone" class="dropdown-item danger-link block px-4 py-3">
+                                <span class="font-medium">Zone dangereuse</span>
                             </a>
                         </div>
                     </div>
                 </div>
 
-                <!-- Bouton action rapide -->
-                <a href="/deliveries/create" 
-                   class="hidden md:inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                    </svg>
-                    Nouvelle livraison
-                </a>
+              
 
                 <!-- Menu mobile (hamburger) -->
-                <button id="mobileMenuBtn" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                    </svg>
+                <button id="mobileMenuBtn" class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                    <div class="w-6 h-5 flex flex-col justify-between">
+                        <span class="hamburger-line w-full h-0.5 bg-gray-600 rounded"></span>
+                        <span class="hamburger-line w-full h-0.5 bg-gray-600 rounded"></span>
+                        <span class="hamburger-line w-full h-0.5 bg-gray-600 rounded"></span>
+                    </div>
                 </button>
             </div>
 
-            <!-- Menu mobile (caché par défaut) -->
-            <div id="mobileMenu" class="hidden md:hidden pb-4">
-                <div class="flex flex-col space-y-2">
-                    <a href="/deliveries" class="nav-link">📦 Livraisons</a>
-                    <a href="/zones" class="nav-link">🗺️ Zones</a>
-                    <a href="/benefits" class="nav-link">💰 Bénéfices</a>
-                    <a href="/admin/stats" class="nav-link">📊 Statistiques</a>
-                    <a href="/admin/danger-zone" class="nav-link danger-link">⚠️ Zone dangereuse</a>
-                    <hr class="my-2">
-                    <a href="/deliveries/create" class="px-4 py-2 bg-blue-500 text-white rounded-lg text-center">
-                        + Nouvelle livraison
+            <!-- Menu mobile -->
+            <div id="mobileMenu" class="md:hidden">
+                <div class="flex flex-col space-y-2 pb-4">
+                    <a href="/deliveries" class="nav-link justify-start">
+                        Livraisons
+                    </a>
+                    <a href="/zones" class="nav-link justify-start">
+                        Zones
+                    </a>
+                    <a href="/benefits" class="nav-link justify-start">
+                        Bénéfices
+                    </a>
+                    <a href="/admin/stats" class="nav-link justify-start">
+                        Statistiques
+                    </a>
+                    <a href="/admin/danger-zone" class="nav-link danger-link justify-start">
+                        Zone dangereuse
+                    </a>
+                    <div class="h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent my-2"></div>
+                    <a href="/deliveries/create" class="px-4 py-2.5 btn-primary text-white rounded-lg text-center font-medium">
+                         Nouvelle livraison
                     </a>
                 </div>
             </div>
@@ -111,9 +333,9 @@
     </nav>
 
     <!-- Breadcrumb -->
-    <div class="container mx-auto px-4 mb-4">
-        <nav class="text-sm text-gray-600">
-            <a href="/" class="hover:text-blue-500">Accueil</a>
+    <div class="container mx-auto px-4 py-4">
+        <nav class="text-sm text-gray-600 flex items-center space-x-2">
+            <a href="/" class="breadcrumb-link hover:text-blue-500 font-medium">Accueil</a>
             <?php
             $uri = trim($_SERVER['REQUEST_URI'], '/');
             $parts = explode('/', $uri);
@@ -125,7 +347,6 @@
                 $breadcrumb .= '/' . $part;
                 $isLast = ($index === count($parts) - 1);
                 
-                // Traductions
                 $translations = [
                     'deliveries' => 'Livraisons',
                     'zones' => 'Zones',
@@ -139,10 +360,12 @@
                 
                 $label = $translations[$part] ?? ucfirst($part);
                 
+                echo '<span class="text-gray-400">/</span>';
+                
                 if ($isLast) {
-                    echo ' / <span class="text-gray-900 font-semibold">' . $label . '</span>';
+                    echo '<span class="text-gray-900 font-semibold">' . $label . '</span>';
                 } else {
-                    echo ' / <a href="' . $breadcrumb . '" class="hover:text-blue-500">' . $label . '</a>';
+                    echo '<a href="' . $breadcrumb . '" class="breadcrumb-link hover:text-blue-500">' . $label . '</a>';
                 }
             }
             ?>
@@ -150,55 +373,54 @@
     </div>
 
     <!-- Contenu principal -->
-    <main>
+    <main class="container mx-auto px-4 pb-12">
         <?= $content ?>
     </main>
 
     <!-- Footer -->
-    <footer class="mt-12 bg-white border-t border-gray-200">
-        <div class="container mx-auto px-4 py-6">
+    <footer class="mt-12 glass-effect border-t border-gray-200">
+        <div class="container mx-auto px-4 py-8">
             <div class="flex flex-col md:flex-row justify-between items-center text-sm text-gray-600">
-                <div class="mb-4 md:mb-0">
-                    <p>&copy; 2025 Système de Livraison - Examen Décembre 2025</p>
-                    <p class="text-xs mt-1">FlightPHP MVC • MySQL • Tailwind CSS</p>
+                <div class="mb-4 md:mb-0 text-center md:textleft">
+                    <p class="font-semibold text-gray-800">etu004280_004285</p>
+                    <p class="text-xs mt-1 flex items-center justify-center md:justify-start gap-2 flex-wrap">
+                        <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-md font-medium">FlightPHP MVC</span>
+                        <span class="px-2 py-1 bg-green-100 text-green-700 rounded-md font-medium">MySQL</span>
+                        <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded-md font-medium">Tailwind CSS</span>
+                    </p>
                 </div>
                 
-                <div class="flex items-center space-x-6">
-                    <a href="/admin/stats" class="hover:text-blue-500 flex items-center">
-                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                        </svg>
-                        Statistiques
-                    </a>
-                    
-                    <a href="https://github.com/Edinah00/FlightPHP" target="_blank" 
-                       class="hover:text-blue-500 flex items-center">
-                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">
-                            <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z" clip-rule="evenodd"/>
-                        </svg>
-                        GitHub
-                    </a>
-                </div>
+            
             </div>
         </div>
     </footer>
 
     <!-- Scripts -->
     <script>
-        // Menu mobile toggle
-        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
-            const menu = document.getElementById('mobileMenu');
-            menu.classList.toggle('hidden');
+        // Menu mobile toggle avec animation
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        mobileMenuBtn.addEventListener('click', function() {
+            mobileMenu.classList.toggle('show');
+            this.classList.toggle('hamburger-active');
         });
 
         // Fermer le menu mobile quand on clique en dehors
         document.addEventListener('click', function(event) {
-            const menu = document.getElementById('mobileMenu');
-            const btn = document.getElementById('mobileMenuBtn');
-            
-            if (!menu.contains(event.target) && !btn.contains(event.target)) {
-                menu.classList.add('hidden');
+            if (!mobileMenu.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
+                mobileMenu.classList.remove('show');
+                mobileMenuBtn.classList.remove('hamburger-active');
+            }
+        });
+
+        // Navbar shadow on scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 20) {
+                navbar.classList.add('navbar-scrolled');
+            } else {
+                navbar.classList.remove('navbar-scrolled');
             }
         });
 
@@ -208,7 +430,7 @@
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             });
         });
@@ -225,8 +447,9 @@
         // Auto-hide alerts after 5 seconds
         document.querySelectorAll('.alert').forEach(alert => {
             setTimeout(() => {
-                alert.style.transition = 'opacity 0.5s';
+                alert.style.transition = 'opacity 0.5s, transform 0.5s';
                 alert.style.opacity = '0';
+                alert.style.transform = 'translateY(-20px)';
                 setTimeout(() => alert.remove(), 500);
             }, 5000);
         });
@@ -234,7 +457,18 @@
         // Format numbers with thousands separator
         document.querySelectorAll('[data-format="number"]').forEach(el => {
             const value = parseFloat(el.textContent);
-            el.textContent = value.toLocaleString('fr-FR');
+            if (!isNaN(value)) {
+                el.textContent = value.toLocaleString('fr-FR');
+            }
+        });
+
+        // Page load animation
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                document.body.style.transition = 'opacity 0.5s';
+                document.body.style.opacity = '1';
+            }, 100);
         });
     </script>
 
