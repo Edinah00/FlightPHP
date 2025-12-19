@@ -1,4 +1,5 @@
 <?php
+
 namespace app\models;
 
 use Flight;
@@ -23,6 +24,11 @@ class Delivery
                     l.cout_vehicule,
                     c.reference,
                     c.poids_kg,
+                    c.prix_par_kg,
+                    (c.poids_kg * c.prix_par_kg) AS montant_base,
+                    z.pourcentage_supplement,
+                    ((c.poids_kg * c.prix_par_kg) * z.pourcentage_supplement / 100) AS montant_supplement,
+                    ((c.poids_kg * c.prix_par_kg) * (1 + z.pourcentage_supplement / 100)) AS chiffre_affaire,
                     CONCAT(liv.nom, ' ', liv.prenom) AS livreur,
                     v.immatriculation,
                     z.nom_zone
@@ -45,7 +51,10 @@ class Delivery
                     c.poids_kg,
                     c.prix_par_kg,
                     c.description,
-                    (c.poids_kg * c.prix_par_kg) AS chiffre_affaire,
+                    (c.poids_kg * c.prix_par_kg) AS montant_base,
+                    z.pourcentage_supplement,
+                    ((c.poids_kg * c.prix_par_kg) * z.pourcentage_supplement / 100) AS montant_supplement,
+                    ((c.poids_kg * c.prix_par_kg) * (1 + z.pourcentage_supplement / 100)) AS chiffre_affaire,
                     CONCAT(liv.nom, ' ', liv.prenom) AS livreur,
                     liv.salaire_par_livraison,
                     v.immatriculation,
@@ -54,11 +63,11 @@ class Delivery
                     z.nom_zone,
                     e.nom AS entrepot,
                     (liv.salaire_par_livraison + l.cout_vehicule) AS cout_revient_total,
-                    ((c.poids_kg * c.prix_par_kg) - (liv.salaire_par_livraison + l.cout_vehicule)) AS benefice
+                    (((c.poids_kg * c.prix_par_kg) * (1 + z.pourcentage_supplement / 100)) - (liv.salaire_par_livraison + l.cout_vehicule)) AS benefice
                 FROM livraisons_liv l
                 JOIN colis_liv c ON l.id_colis = c.id_colis
                 JOIN livreurs_liv liv ON l.id_livreur = liv.id_livreur
-                JOIN vehicules_liv v ON l.id_vehicule = v.id_vehicule
+                JOIN vehicules_liv v ON l.id_vehicule = v.id_vehicule 
                 JOIN zones_livraison_liv z ON l.id_zone = z.id_zone
                 JOIN entrepot_liv e ON l.id_entrepot = e.id_entrepot
                 WHERE l.id_livraison = ?";
@@ -96,7 +105,7 @@ class Delivery
                              VALUES (?, ?, ?, 1, ?, ?, ?, 'en_attente')";
             $stmt = $this->conn->prepare($sqlLivraison);
             $stmt->bind_param(
-                'iiiisd',
+                'iiisd',
                 $id_colis,
                 $data['id_livreur'],
                 $data['id_vehicule'],
@@ -131,7 +140,7 @@ class Delivery
     {
         $sql = "SELECT 
                     id_livreur,
-                    CONCAT(nom, ' ', prenom, ' (', salaire_par_livraison, ' Ar/livraison)') AS label,
+                    CONCAT(nom, ' ', prenom, ' (', FORMAT(salaire_par_livraison, 0), ' Ar/livraison)') AS label,
                     salaire_par_livraison
                 FROM livreurs_liv
                 WHERE statut = 'actif'
@@ -156,8 +165,71 @@ class Delivery
 
     public function getZones(): array
     {
-        $sql = "SELECT * FROM zones_livraison_liv ORDER BY nom_zone";
+        $sql = "SELECT 
+                    id_zone,
+                    nom_zone,
+                    pourcentage_supplement,
+                    CONCAT(nom_zone, ' (', 
+                        CASE 
+                            WHEN pourcentage_supplement > 0 
+                            THEN CONCAT('+', pourcentage_supplement, '% supplément')
+                            ELSE 'Pas de supplément'
+                        END,
+                    ')') AS label
+                FROM zones_livraison_liv 
+                ORDER BY nom_zone";
+        
         $result = $this->conn->query($sql);
         return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    /**
+     * Calculer le détail financier d'une livraison potentielle
+     * Utile pour l'affichage dynamique lors de la création
+     */
+    public function calculateDeliveryFinancials(float $poids, float $prixParKg, int $idZone, int $idLivreur, float $coutVehicule): array
+    {
+        // Montant de base (poids * prix/kg)
+        $montantBase = $poids * $prixParKg;
+
+        // Récupérer le pourcentage de supplément de la zone
+        $sqlZone = "SELECT pourcentage_supplement FROM zones_livraison_liv WHERE id_zone = ?";
+        $stmt = $this->conn->prepare($sqlZone);
+        $stmt->bind_param('i', $idZone);
+        $stmt->execute();
+        $zone = $stmt->get_result()->fetch_assoc();
+        $pourcentageSupplement = $zone ? $zone['pourcentage_supplement'] : 0;
+
+        // Calculer le supplément
+        $montantSupplement = $montantBase * ($pourcentageSupplement / 100);
+
+        // Chiffre d'affaire total (base + supplément)
+        $chiffreAffaire = $montantBase + $montantSupplement;
+
+        // Récupérer le salaire du livreur
+        $sqlLivreur = "SELECT salaire_par_livraison FROM livreurs_liv WHERE id_livreur = ?";
+        $stmt = $this->conn->prepare($sqlLivreur);
+        $stmt->bind_param('i', $idLivreur);
+        $stmt->execute();
+        $livreur = $stmt->get_result()->fetch_assoc();
+        $salaireLivreur = $livreur ? $livreur['salaire_par_livraison'] : 0;
+
+        // Coût de revient total (salaire + coût véhicule)
+        $coutRevient = $salaireLivreur + $coutVehicule;
+
+        // Bénéfice net
+        $benefice = $chiffreAffaire - $coutRevient;
+
+        return [
+            'montant_base' => $montantBase,
+            'pourcentage_supplement' => $pourcentageSupplement,
+            'montant_supplement' => $montantSupplement,
+            'chiffre_affaire' => $chiffreAffaire,
+            'salaire_livreur' => $salaireLivreur,
+            'cout_vehicule' => $coutVehicule,
+            'cout_revient_total' => $coutRevient,
+            'benefice' => $benefice,
+            'marge_pourcentage' => $chiffreAffaire > 0 ? ($benefice / $chiffreAffaire * 100) : 0
+        ];
     }
 }

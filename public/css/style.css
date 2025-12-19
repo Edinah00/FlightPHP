@@ -475,3 +475,19 @@ footer {
 .p-2 { padding: var(--spacing-sm); }
 .p-3 { padding: var(--spacing-md); }
 .p-4 { padding: var(--spacing-lg); }
+
+.active {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.breadcrumb {
+    margin: 10px auto;
+    font-size: 14px;
+    color: #666;
+}
+
+.small {
+    font-size: 12px;
+    color: #888;
+}

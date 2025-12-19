@@ -35,6 +35,12 @@ if (function_exists('setlocale') === true) {
 /**********************************************
  *           FlightPHP Core Settings          *
  **********************************************/
+// ======= Méthode override pour PUT / DELETE =======
+Flight::before('start', function () {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['_method'])) {
+        $_SERVER['REQUEST_METHOD'] = strtoupper($_POST['_method']);
+    }
+});
 
 // Get the $app var to use below
 if (empty($app) === true) {
@@ -68,7 +74,7 @@ return [
 	'database' => [
 		// MySQL Example:
 		 'host'     => '127.0.0.1',      // Database host (e.g., 'localhost', 'db.example.com')
-		'dbname'   => 'gestion_livraison',   // Database name (e.g., 'flightphp')
+		'dbname'   => 'livraison_db',   // Database name (e.g., 'flightphp')
 		 'user'     => 'root',  // Database user (e.g., 'root')
 		 'password' => '',  // Database password (never commit real passwords)
 
