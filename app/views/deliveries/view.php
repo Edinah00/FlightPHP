@@ -46,7 +46,7 @@
 
     <!-- Informations du colis -->
     <div class="info-section">
-        <h3>📦 Informations du colis</h3>
+        <h3> Informations du colis</h3>
         <div class="info-grid">
             <div class="info-item">
                 <label>Référence</label>
@@ -69,7 +69,7 @@
 
     <!-- Affectation -->
     <div class="info-section">
-        <h3>🚚 Affectation</h3>
+        <h3> Affectation</h3>
         <div class="info-grid">
             <div class="info-item">
                 <label>Chauffeur (Livreur)</label>
@@ -85,7 +85,7 @@
 
     <!-- Destination -->
     <div class="info-section">
-        <h3>📍 Itinéraire</h3>
+        <h3> Itinéraire</h3>
         <div class="info-grid">
             <div class="info-item">
                 <label>Départ (Entrepôt)</label>
@@ -104,7 +104,7 @@
 
     <!-- Calculs financiers -->
     <div class="info-section financial">
-        <h3>💰 Analyse financière</h3>
+        <h3> Analyse financière</h3>
         
         <div class="financial-grid">
             <div class="financial-item ca">

@@ -2,7 +2,7 @@
 require '../vendor/autoload.php';
 
 // Charger le fichier de config
-$config = require __DIR__ . '/../app/config/config.php';
+$config = require '../app/config/config.php';
 $host     = $config['database']['host'];
 $dbname   = $config['database']['dbname'];
 $user     = $config['database']['user'];
