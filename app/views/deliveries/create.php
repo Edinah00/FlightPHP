@@ -1,24 +1,23 @@
-<?php
-// ============================================
-// FILE: app/views/deliveries/create.php (MODIFIÉE POUR METHODES REST)
-// ============================================
-?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delivery_system</title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>/style.css">
+    <title>Document</title>
+
+    
 </head>
 <body>
+
 <div class="container mx-auto px-4 py-8">
     <div class="max-w-6xl mx-auto">
         <h1 class="text-3xl font-bold text-gray-800 mb-6"><?= $title ?></h1>
 
         <?php if (isset($_GET['error'])): ?>
             <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                <?= htmlspecialchars($_GET['error']) ?>
+                ✗ <?= htmlspecialchars($_GET['error']) ?>
             </div>
         <?php endif; ?>
 
@@ -27,9 +26,6 @@
             <div class="lg:col-span-2">
                 <div class="bg-white rounded-lg shadow p-6">
                     <form method="POST" action="/deliveries" id="deliveryForm">
-                        <!-- Si tu veux utiliser PUT ou DELETE pour update, ajouter ceci : -->
-                        <!-- <input type="hidden" name="_method" value="PUT"> -->
-                        
                         <!-- SECTION COLIS -->
                         <div class="mb-6">
                             <h2 class="text-xl font-bold text-gray-700 mb-4 pb-2 border-b">📦 Informations du colis</h2>
@@ -63,12 +59,11 @@
 
                         <!-- SECTION LIVRAISON -->
                         <div class="mb-6">
-                            <h2 class="text-xl font-bold text-gray-700 mb-4 pb-2 border-b">Détails de la livraison</h2>
+                            <h2 class="text-xl font-bold text-gray-700 mb-4 pb-2 border-b">🚚 Détails de la livraison</h2>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-gray-700 text-sm font-bold mb-2">
                                         Zone de livraison *
-                                        <span class="text-xs font-normal text-gray-500">(affecte le supplément)</span>
                                     </label>
                                     <select name="id_zone" id="id_zone" required
                                             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -123,10 +118,60 @@
 
                         <!-- BOUTONS -->
                         <div class="flex justify-between pt-4">
-                            <a href="/deliveries" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-2 rounded-lg">Annuler</a>
-                            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg">Créer la livraison</button>
+                            <a href="/deliveries" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-2 rounded-lg">← Annuler</a>
+                            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg">✓ Créer la livraison</button>
                         </div>
                     </form>
+                </div>
+            </div>
+
+            <!-- Panneau de calcul en temps réel -->
+            <div class="lg:col-span-1">
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-lg shadow-lg p-6 sticky top-24">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">💰 Aperçu financier</h3>
+                    
+                    <div class="space-y-3 text-sm">
+                        <div class="flex justify-between py-2 border-b border-blue-200">
+                            <span class="text-gray-600">Montant de base</span>
+                            <span class="font-bold" id="montant_base">0 Ar</span>
+                        </div>
+                        
+                        <div class="flex justify-between py-2 border-b border-blue-200">
+                            <span class="text-gray-600">Supplément zone <span id="supplement_percent">(0%)</span></span>
+                            <span class="font-bold" id="montant_supplement">0 Ar</span>
+                        </div>
+                        
+                        <div class="flex justify-between py-2 border-b-2 border-blue-300 bg-blue-100 px-2 rounded">
+                            <span class="font-bold text-blue-800">Chiffre d'affaire</span>
+                            <span class="font-bold text-blue-800" id="chiffre_affaire">0 Ar</span>
+                        </div>
+                        
+                        <div class="pt-2">
+                            <p class="font-semibold text-gray-700 mb-2">Coûts :</p>
+                            <div class="flex justify-between py-1">
+                                <span class="text-gray-600">• Salaire livreur</span>
+                                <span id="salaire_livreur">0 Ar</span>
+                            </div>
+                            <div class="flex justify-between py-1">
+                                <span class="text-gray-600">• Coût véhicule</span>
+                                <span id="cout_vehicule_display">0 Ar</span>
+                            </div>
+                            <div class="flex justify-between py-2 font-semibold border-t border-blue-200 mt-2">
+                                <span>Total coûts</span>
+                                <span id="cout_total">0 Ar</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between py-3 bg-gradient-to-r from-green-100 to-emerald-100 px-3 rounded-lg border-2 border-green-300 mt-4">
+                            <span class="font-bold text-green-800">💎 Bénéfice net</span>
+                            <span class="font-bold text-lg text-green-800" id="benefice">0 Ar</span>
+                        </div>
+                        
+                        <div class="text-center pt-2">
+                            <span class="text-xs text-gray-600">Marge : </span>
+                            <span class="text-sm font-bold" id="marge">0%</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -134,7 +179,6 @@
 </div>
 
 <script>
-// Reste du JS pour calculs en temps réel (inchangé)
 function updateCalculations() {
     const poids = parseFloat(document.getElementById('poids_kg').value) || 0;
     const prixParKg = parseFloat(document.getElementById('prix_par_kg').value) || 0;
@@ -172,5 +216,6 @@ function updateCalculations() {
     }
 });
 </script>
+
 </body>
 </html>

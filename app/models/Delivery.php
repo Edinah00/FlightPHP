@@ -105,7 +105,7 @@ class Delivery
                              VALUES (?, ?, ?, 1, ?, ?, ?, 'en_attente')";
             $stmt = $this->conn->prepare($sqlLivraison);
             $stmt->bind_param(
-                'iiisd',
+                'iiiisd',
                 $id_colis,
                 $data['id_livreur'],
                 $data['id_vehicule'],

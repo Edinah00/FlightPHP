@@ -270,7 +270,9 @@
                     <a href="/benefits" class="nav-link <?= strpos($_SERVER['REQUEST_URI'], '/benefits') !== false ? 'active' : '' ?>">
                         Bénéfices
                     </a>
-
+        <a href="/deliveries/create" class="px-4 py-2.5 btn-primary text-white rounded-lg text-center font-medium">
+                         Nouvelle livraison
+                    </a>
                     <!-- Dropdown Admin -->
                     <div class="relative group">
                         <button class="nav-link <?= strpos($_SERVER['REQUEST_URI'], '/admin') !== false ? 'active' : '' ?>">
@@ -324,10 +326,9 @@
                         Zone dangereuse
                     </a>
                     <div class="h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent my-2"></div>
-                    <a href="/deliveries/create" class="px-4 py-2.5 btn-primary text-white rounded-lg text-center font-medium">
-                         Nouvelle livraison
-                    </a>
+                   
                 </div>
+                  
             </div>
         </div>
     </nav>
